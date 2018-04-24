@@ -81,7 +81,7 @@ class puppetboard::apache::conf (
     group   => $group,
     require => [
       User[$user],
-      Vcsrepo[$docroot],
+      Package['puppetboard'],
     ],
   }
 

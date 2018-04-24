@@ -224,19 +224,18 @@ class puppetboard(
     mode   => '0755',
   }
 
-  vcsrepo { "${basedir}/puppetboard":
-    ensure   => present,
-    provider => git,
-    owner    => $user,
-    source   => $git_source,
-    revision => $revision,
-    require  => User[$user],
+  package { 'puppetboard':
+    ensure          => present,
+    provider        => pip,
+    revision        => $revision,
+    install_options => {"--target" => "${basedir}"},
+    require         => User[$user],
   }
 
   file { "${basedir}/puppetboard":
     owner   => $user,
     recurse => true,
-    require => Vcsrepo["${basedir}/puppetboard"],
+    require => Package['puppetboard'],
   }
 
   file {"${basedir}/puppetboard/settings.py":
@@ -245,20 +244,7 @@ class puppetboard(
     mode    => '0644',
     owner   => $user,
     content => template('puppetboard/settings.py.erb'),
-    require => Vcsrepo["${basedir}/puppetboard"],
-  }
-
-  python::virtualenv { "${basedir}/virtenv-puppetboard":
-    ensure       => present,
-    version      => 'system',
-    requirements => "${basedir}/puppetboard/requirements.txt",
-    systempkgs   => true,
-    distribute   => false,
-    owner        => $user,
-    cwd          => "${basedir}/puppetboard",
-    require      => Vcsrepo["${basedir}/puppetboard"],
-    proxy        => $python_proxy,
-    index        => $python_index,
+    require => Package['puppetboard'],
   }
 
   if $listen == 'public' {
@@ -270,20 +256,6 @@ class puppetboard(
         File["${basedir}/puppetboard"],
         Python::Virtualenv["${basedir}/virtenv-puppetboard"]
       ],
-    }
-  }
-
-  if $manage_git and !defined(Package['git']) {
-    package {'git':
-      ensure => installed,
-    }
-  }
-
-  if $manage_virtualenv and !defined(Package[$::puppetboard::params::virtualenv]) {
-    class { '::python':
-      virtualenv => 'present',
-      dev        => 'present',
-      use_epel   => $python_use_epel,
     }
   }
 

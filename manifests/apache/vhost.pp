@@ -110,7 +110,7 @@ class puppetboard::apache::vhost (
     group   => $group,
     require => [
       User[$user],
-      Vcsrepo[$docroot],
+      Package['puppetboard'],
     ],
   }
 
