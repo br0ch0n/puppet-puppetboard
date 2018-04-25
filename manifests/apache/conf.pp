@@ -74,7 +74,7 @@ class puppetboard::apache::conf (
 
   $docroot = "${basedir}/puppetboard"
 
-  file { "${docroot}/wsgi.py":
+  file { "${basedir}/wsgi.py":
     ensure  => present,
     content => template('puppetboard/wsgi.py.erb'),
     owner   => $user,
@@ -90,7 +90,7 @@ class puppetboard::apache::conf (
     owner   => 'root',
     group   => 'root',
     content => template('puppetboard/apache/conf.erb'),
-    require => File["${docroot}/wsgi.py"],
+    require => File["${basedir}/wsgi.py"],
     notify  => Service[$::puppetboard::params::apache_service],
   }
 }

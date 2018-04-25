@@ -1,5 +1,5 @@
 WSGIDaemonProcess puppetboard user=<%= @user -%> group=<%= @user -%> threads=<%= @threads %> maximum-requests=<%= @max_reqs %>
-WSGIScriptAlias <%= @wsgi_alias -%> <%= @docroot -%>/wsgi.py
+WSGIScriptAlias <%= @wsgi_alias -%> <%= @basedir -%>/wsgi.py
 
 <Directory <%= @docroot -%>>
     WSGIProcessGroup puppetboard

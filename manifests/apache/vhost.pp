@@ -94,7 +94,7 @@ class puppetboard::apache::vhost (
   $docroot = "${basedir}/puppetboard"
 
   $wsgi_script_aliases = {
-    "${wsgi_alias}" => "${docroot}/wsgi.py",
+    "${wsgi_alias}" => "${basedir}/wsgi.py",
   }
 
   $wsgi_daemon_process_options = {
@@ -103,7 +103,7 @@ class puppetboard::apache::vhost (
     user    => $user,
   }
 
-  file { "${docroot}/wsgi.py":
+  file { "${basedir}/wsgi.py":
     ensure  => present,
     content => template('puppetboard/wsgi.py.erb'),
     owner   => $user,
@@ -122,7 +122,7 @@ class puppetboard::apache::vhost (
       owner   => 'root',
       group   => 'root',
       content => template('puppetboard/apache/ldap.erb'),
-      require => File["${docroot}/wsgi.py"],
+      require => File["${basedir}/wsgi.py"],
       notify  => Service[$::puppetboard::params::apache_service],
     }
   }
@@ -142,7 +142,7 @@ class puppetboard::apache::vhost (
     wsgi_script_aliases         => $wsgi_script_aliases,
     wsgi_daemon_process_options => $wsgi_daemon_process_options,
     override                    => $override,
-    require                     => [ File["${docroot}/wsgi.py"], $ldap_require ],
+    require                     => [ File["${basedir}/wsgi.py"], $ldap_require ],
     notify                      => Service[$::puppetboard::params::apache_service],
     *                           => $custom_apache_parameters,
   }
