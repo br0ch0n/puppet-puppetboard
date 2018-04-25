@@ -227,7 +227,6 @@ class puppetboard(
   package { 'puppetboard':
     ensure          => present,
     provider        => pip,
-    revision        => $revision,
     install_options => {"--target" => "${basedir}"},
     require         => User[$user],
   }
