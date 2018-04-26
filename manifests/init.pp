@@ -224,17 +224,16 @@ class puppetboard(
     mode   => '0755',
   }
 
-  package { 'puppetboard':
-    ensure          => present,
-    provider        => pip,
-    install_options => {"--target" => "${basedir}"},
+  exec { 'puppetboard':
+    command         => "/usr/bin/pip install --target ${basedir} puppetboard",
+    creates         => "${basedir}/puppetboard",
     require         => User[$user],
   }
 
   file { "${basedir}/puppetboard":
     owner   => $user,
     recurse => true,
-    require => Package['puppetboard'],
+    require => Exec['puppetboard'],
   }
 
   file {"${basedir}/puppetboard/settings.py":
@@ -243,7 +242,7 @@ class puppetboard(
     mode    => '0644',
     owner   => $user,
     content => template('puppetboard/settings.py.erb'),
-    require => Package['puppetboard'],
+    require => Exec['puppetboard'],
   }
 
   if $listen == 'public' {

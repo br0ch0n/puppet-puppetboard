@@ -110,7 +110,7 @@ class puppetboard::apache::vhost (
     group   => $group,
     require => [
       User[$user],
-      Package['puppetboard'],
+      Exec['puppetboard'],
     ],
   }
 
